@@ -26,7 +26,6 @@ import classNames from "classnames"
 import PageLayoutContext from "src/components/core/PageLayoutContext"
 import ReportView from "src/components/core/ReportView"
 import StatusWidget from "src/components/core/StatusWidget"
-import MainMenu from "src/components/core/MainMenu"
 import Header from "src/components/core/Header"
 import {
   DialogProps,
@@ -437,7 +436,7 @@ export class App extends PureComponent<Props, State> {
         title,
       })
 
-      document.title = `${title} · Streamlit`
+      document.title = `${title}`
     }
 
     if (favicon) {
@@ -607,7 +606,7 @@ export class App extends PureComponent<Props, State> {
     )
 
     // Set the title and favicon to their default values
-    document.title = `${reportName} · Streamlit`
+    document.title = `${reportName}`
     handleFavicon(`${process.env.PUBLIC_URL}/favicon.png`)
 
     MetricsManager.current.setMetadata(
@@ -1150,27 +1149,6 @@ export class App extends PureComponent<Props, State> {
                 rerunReport={this.rerunScript}
                 stopReport={this.stopReport}
                 allowRunOnSave={allowRunOnSave}
-              />
-              <MainMenu
-                sharingEnabled={sharingEnabled === true}
-                isServerConnected={this.isServerConnected()}
-                shareCallback={this.shareReport}
-                quickRerunCallback={this.rerunScript}
-                clearCacheCallback={this.openClearCacheDialog}
-                settingsCallback={this.settingsCallback}
-                aboutCallback={this.aboutCallback}
-                screencastCallback={this.screencastCallback}
-                screenCastState={this.props.screenCast.currentState}
-                s4aMenuItems={this.props.s4aCommunication.currentState.items}
-                sendS4AMessage={this.props.s4aCommunication.sendMessage}
-                gitInfo={gitInfo}
-                showDeployError={this.showDeployError}
-                closeDialog={this.closeDialog}
-                isDeployErrorModalOpen={
-                  this.state.dialog?.type === DialogType.DEPLOY_ERROR
-                }
-                loadGitInfo={this.sendLoadGitInfoBackMsg}
-                canDeploy={SessionInfo.isSet() && !SessionInfo.isHello}
               />
             </Header>
 
