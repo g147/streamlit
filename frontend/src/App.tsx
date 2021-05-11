@@ -17,6 +17,7 @@
 
 import React, { Fragment, PureComponent, ReactNode } from "react"
 import moment from "moment"
+import { HotKeys, KeyMap } from "react-hotkeys"
 import { fromJS } from "immutable"
 import { enableAllPlugins as enableImmerPlugins } from "immer"
 import classNames from "classnames"
@@ -153,14 +154,14 @@ export class App extends PureComponent<Props, State> {
   private readonly formsMgr: FormsManager
 
   /**
-   * When new Deltas are received, they are applied to `pendingElementsBuffer`
-   * rather than directly to `this.state.elements`. We assign
-   * `pendingElementsBuffer` to `this.state` on a timer, in order to
-   * decouple Delta updates from React re-renders, for performance reasons.
-   *
-   * (If `pendingElementsBuffer === this.state.elements` - the default state -
-   * then we have no pending elements.)
-   */
+  * When new Deltas are received, they are applied to `pendingElementsBuffer`
+  * rather than directly to `this.state.elements`. We assign
+  * `pendingElementsBuffer` to `this.state` on a timer, in order to
+  * decouple Delta updates from React re-renders, for performance reasons.
+  *
+  * (If `pendingElementsBuffer === this.state.elements` - the default state -
+  * then we have no pending elements.)
+  */
   private pendingElementsBuffer: ReportRoot
 
   private pendingElementsTimerRunning: boolean
@@ -242,8 +243,11 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Global keyboard shortcuts.
-   */
+  * Global keyboard shortcuts.
+  */
+  keyMap: KeyMap = {
+    RERUN: "r"
+  }
 
   keyHandlers = {
     RERUN: () => this.rerunScript(),
@@ -306,8 +310,8 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Checks if the code version from the backend is different than the frontend
-   */
+  * Checks if the code version from the backend is different than the frontend
+  */
   static hasStreamlitVersionChanged(initializeMsg: Initialize): boolean {
     if (SessionInfo.isSet()) {
       const { streamlitVersion: currentStreamlitVersion } = SessionInfo.current
@@ -325,8 +329,8 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Called by ConnectionManager when our connection state changes
-   */
+  * Called by ConnectionManager when our connection state changes
+  */
   handleConnectionStateChanged = (newState: ConnectionState): void => {
     logMessage(
       `Connection state changed from ${this.state.connectionState} to ${newState}`
@@ -356,8 +360,8 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Callback when we get a message from the server.
-   */
+  * Callback when we get a message from the server.
+  */
   handleMessage = (msgProto: ForwardMsg): void => {
     // We don't have an immutableProto here, so we can't use
     // the dispatchOneOf helper
@@ -465,9 +469,9 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Handler for ForwardMsg.sessionStateChanged messages
-   * @param stateChangeProto a SessionState protobuf
-   */
+  * Handler for ForwardMsg.sessionStateChanged messages
+  * @param stateChangeProto a SessionState protobuf
+  */
   handleSessionStateChanged = (stateChangeProto: SessionState): void => {
     this.setState((prevState: State) => {
       // Determine our new ReportRunState
@@ -534,9 +538,9 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Handler for ForwardMsg.sessionEvent messages
-   * @param sessionEvent a SessionEvent protobuf
-   */
+  * Handler for ForwardMsg.sessionEvent messages
+  * @param sessionEvent a SessionEvent protobuf
+  */
   handleSessionEvent = (sessionEvent: SessionEvent): void => {
     this.sessionEventDispatcher.handleSessionEventMsg(sessionEvent)
     if (sessionEvent.type === "scriptCompilationException") {
@@ -562,9 +566,9 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Handler for ForwardMsg.newReport messages. This runs on each rerun
-   * @param newReportProto a NewReport protobuf
-   */
+  * Handler for ForwardMsg.newReport messages. This runs on each rerun
+  * @param newReportProto a NewReport protobuf
+  */
   handleNewReport = (newReportProto: NewReport): void => {
     const initialize = newReportProto.initialize as Initialize
     const config = newReportProto.config as Config
@@ -618,8 +622,8 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Performs one-time initialization. This is called from `handleNewReport`.
-   */
+  * Performs one-time initialization. This is called from `handleNewReport`.
+  */
   handleOneTimeInitialization = (newReportProto: NewReport): void => {
     const initialize = newReportProto.initialize as Initialize
     const config = newReportProto.config as Config
@@ -688,9 +692,9 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Handler for ForwardMsg.reportFinished messages
-   * @param status the ReportFinishedStatus that the report finished with
-   */
+  * Handler for ForwardMsg.reportFinished messages
+  * @param status the ReportFinishedStatus that the report finished with
+  */
   handleReportFinished(status: ForwardMsg.ReportFinishedStatus): void {
     if (status === ForwardMsg.ReportFinishedStatus.FINISHED_SUCCESSFULLY) {
       // Notify any subscribers of this event (and do it on the next cycle of
@@ -734,8 +738,8 @@ export class App extends PureComponent<Props, State> {
   }
 
   /*
-   * Clear all elements from the state.
-   */
+  * Clear all elements from the state.
+  */
   clearAppState(
     reportHash: string,
     reportId: string,
@@ -756,23 +760,23 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Opens a dialog with the specified state.
-   */
+  * Opens a dialog with the specified state.
+  */
   openDialog(dialogProps: DialogProps): void {
     this.setState({ dialog: dialogProps })
   }
 
   /**
-   * Closes the upload dialog if it's open.
-   */
+  * Closes the upload dialog if it's open.
+  */
   closeDialog = (): void => {
     this.setState({ dialog: undefined })
     this.props.s4aCommunication.onModalReset()
   }
 
   /**
-   * Saves a UserSettings object.
-   */
+  * Saves a UserSettings object.
+  */
   saveSettings = (newSettings: UserSettings): void => {
     const { runOnSave: prevRunOnSave } = this.state.userSettings
     const { runOnSave } = newSettings
@@ -787,10 +791,10 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Update pendingElementsBuffer with the given Delta and set up a timer to
-   * update state.elements. This buffer allows us to process Deltas quickly
-   * without spamming React with too many of render() calls.
-   */
+  * Update pendingElementsBuffer with the given Delta and set up a timer to
+  * update state.elements. This buffer allows us to process Deltas quickly
+  * without spamming React with too many of render() calls.
+  */
   handleDeltaMsg = (
     deltaMsg: Delta,
     metadataMsg: ForwardMsgMetadata
@@ -824,8 +828,8 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Used by e2e tests to test disabling widgets
-   */
+  * Used by e2e tests to test disabling widgets
+  */
   closeConnection(): void {
     if (this.isServerConnected()) {
       const backMsg = new BackMsg({ closeConnection: true })
@@ -835,8 +839,8 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Callback to call when we want to share the report.
-   */
+  * Callback to call when we want to share the report.
+  */
   shareReport = (): void => {
     if (this.isServerConnected()) {
       if (this.state.sharingEnabled) {
@@ -868,12 +872,12 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Reruns the script.
-   *
-   * @param alwaysRunOnSave a boolean. If true, UserSettings.runOnSave
-   * will be set to true, which will result in a request to the Server
-   * to enable runOnSave for this report.
-   */
+  * Reruns the script.
+  *
+  * @param alwaysRunOnSave a boolean. If true, UserSettings.runOnSave
+  * will be set to true, which will result in a request to the Server
+  * to enable runOnSave for this report.
+  */
   rerunScript = (alwaysRunOnSave = false): void => {
     this.closeDialog()
 
@@ -960,8 +964,8 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Shows a dialog asking the user to confirm they want to clear the cache
-   */
+  * Shows a dialog asking the user to confirm they want to clear the cache
+  */
   openClearCacheDialog = (): void => {
     if (this.isServerConnected()) {
       const newDialog: DialogProps = {
@@ -987,8 +991,8 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Asks the server to clear the st_cache
-   */
+  * Asks the server to clear the st_cache
+  */
   clearCache = (): void => {
     this.closeDialog()
     if (this.isServerConnected()) {
@@ -1002,8 +1006,8 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Sends a message back to the server.
-   */
+  * Sends a message back to the server.
+  */
   private sendBackMsg = (msg: BackMsg): void => {
     if (this.connectionManager) {
       logMessage(msg)
@@ -1014,15 +1018,15 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-   * Updates the report body when there's a connection error.
-   */
+  * Updates the report body when there's a connection error.
+  */
   handleConnectionError = (errNode: ReactNode): void => {
     this.showError("Connection error", errNode)
   }
 
   /**
-   * Indicates whether we're connected to the server.
-   */
+  * Indicates whether we're connected to the server.
+  */
   isServerConnected = (): boolean => {
     return this.connectionManager
       ? this.connectionManager.isConnected()
@@ -1124,6 +1128,33 @@ export class App extends PureComponent<Props, State> {
           addThemes: this.props.theme.addThemes,
         }}
       >
+        <HotKeys
+          keyMap={this.keyMap}
+          handlers={this.keyHandlers}
+          attach={window}
+          focused={true}
+        >
+          <StyledApp className={outerDivClass}>
+            {/* The tabindex below is required for testing. */}
+            
+
+            <ReportView
+              elements={elements}
+              reportId={reportId}
+              reportRunState={reportRunState}
+              showStaleElementIndicator={
+                connectionState !== ConnectionState.STATIC
+              }
+              widgetMgr={this.widgetMgr}
+              widgetsDisabled={connectionState !== ConnectionState.CONNECTED}
+              uploadClient={this.uploadClient}
+              componentRegistry={this.componentRegistry}
+              formsData={this.state.formsData}
+              formsMgr={this.formsMgr}
+            />
+            {renderedDialog}
+          </StyledApp>
+        </HotKeys>
       </PageLayoutContext.Provider>
     )
   }
