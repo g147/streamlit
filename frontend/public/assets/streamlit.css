@@ -952,7 +952,7 @@ pre code {
 
 body {
   margin: 0;
-  background: #ffffff;
+  background: #15202b;
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 1rem;
   line-height: 1.6;
@@ -990,7 +990,7 @@ input[type="reset"],
 input[type="submit"] {
   padding: 0 0.8rem;
   line-height: 1.6;
-  background: #ffffff;
+  background: #15202b;
   border: 1px solid #e6eaf1;
   color: #262730;
   font-size: 1rem;

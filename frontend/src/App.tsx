@@ -17,7 +17,6 @@
 
 import React, { Fragment, PureComponent, ReactNode } from "react"
 import moment from "moment"
-import { HotKeys, KeyMap } from "react-hotkeys"
 import { fromJS } from "immutable"
 import { enableAllPlugins as enableImmerPlugins } from "immer"
 import classNames from "classnames"
@@ -25,7 +24,6 @@ import classNames from "classnames"
 // Other local imports.
 import PageLayoutContext from "src/components/core/PageLayoutContext"
 import ReportView from "src/components/core/ReportView"
-import StatusWidget from "src/components/core/StatusWidget"
 import Header from "src/components/core/Header"
 import {
   DialogProps,
@@ -181,7 +179,7 @@ export class App extends PureComponent<Props, State> {
 
     this.state = {
       connectionState: ConnectionState.INITIAL,
-      elements: ReportRoot.empty("Please wait..."),
+      elements: ReportRoot.empty("Initializing ZieTRAD ...."),
       isFullScreen: false,
       reportName: "",
       reportId: "<null>",
@@ -246,13 +244,6 @@ export class App extends PureComponent<Props, State> {
   /**
    * Global keyboard shortcuts.
    */
-  keyMap: KeyMap = {
-    RERUN: "r",
-    CLEAR_CACHE: "c",
-    // We use key up for stop recording to ensure the esc key doesn't trigger
-    // other actions (like exiting modals)
-    STOP_RECORDING: { sequence: "esc", action: "keyup" },
-  }
 
   keyHandlers = {
     RERUN: () => this.rerunScript(),
@@ -1133,42 +1124,6 @@ export class App extends PureComponent<Props, State> {
           addThemes: this.props.theme.addThemes,
         }}
       >
-        <HotKeys
-          keyMap={this.keyMap}
-          handlers={this.keyHandlers}
-          attach={window}
-          focused={true}
-        >
-          <StyledApp className={outerDivClass}>
-            {/* The tabindex below is required for testing. */}
-            <Header>
-              <StatusWidget
-                connectionState={connectionState}
-                sessionEventDispatcher={this.sessionEventDispatcher}
-                reportRunState={reportRunState}
-                rerunReport={this.rerunScript}
-                stopReport={this.stopReport}
-                allowRunOnSave={allowRunOnSave}
-              />
-            </Header>
-
-            <ReportView
-              elements={elements}
-              reportId={reportId}
-              reportRunState={reportRunState}
-              showStaleElementIndicator={
-                connectionState !== ConnectionState.STATIC
-              }
-              widgetMgr={this.widgetMgr}
-              widgetsDisabled={connectionState !== ConnectionState.CONNECTED}
-              uploadClient={this.uploadClient}
-              componentRegistry={this.componentRegistry}
-              formsData={this.state.formsData}
-              formsMgr={this.formsMgr}
-            />
-            {renderedDialog}
-          </StyledApp>
-        </HotKeys>
       </PageLayoutContext.Provider>
     )
   }
