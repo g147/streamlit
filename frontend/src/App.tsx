@@ -1,18 +1,18 @@
 /**
- * @license
- * Copyright 2018-2021 Streamlit Inc.
+  * @license
+  * Copyright 2018-2021 Streamlit Inc.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+  * Licensed under the Apache License, Version 2.0 (the "License");
+  * you may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+  *    http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
  */
 
 import React, { Fragment, PureComponent, ReactNode } from "react"
@@ -154,13 +154,13 @@ export class App extends PureComponent<Props, State> {
   private readonly formsMgr: FormsManager
 
   /**
-  * When new Deltas are received, they are applied to `pendingElementsBuffer`
-  * rather than directly to `this.state.elements`. We assign
-  * `pendingElementsBuffer` to `this.state` on a timer, in order to
-  * decouple Delta updates from React re-renders, for performance reasons.
+   * When new Deltas are received, they are applied to `pendingElementsBuffer`
+   * rather than directly to `this.state.elements`. We assign
+   * `pendingElementsBuffer` to `this.state` on a timer, in order to
+   * decouple Delta updates from React re-renders, for performance reasons.
   *
-  * (If `pendingElementsBuffer === this.state.elements` - the default state -
-  * then we have no pending elements.)
+   * (If `pendingElementsBuffer === this.state.elements` - the default state -
+   * then we have no pending elements.)
   */
   private pendingElementsBuffer: ReportRoot
 
@@ -243,7 +243,7 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Global keyboard shortcuts.
+   * Global keyboard shortcuts.
   */
   keyMap: KeyMap = {
     RERUN: "r"
@@ -310,7 +310,7 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Checks if the code version from the backend is different than the frontend
+   * Checks if the code version from the backend is different than the frontend
   */
   static hasStreamlitVersionChanged(initializeMsg: Initialize): boolean {
     if (SessionInfo.isSet()) {
@@ -329,7 +329,7 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Called by ConnectionManager when our connection state changes
+   * Called by ConnectionManager when our connection state changes
   */
   handleConnectionStateChanged = (newState: ConnectionState): void => {
     logMessage(
@@ -360,7 +360,7 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Callback when we get a message from the server.
+   * Callback when we get a message from the server.
   */
   handleMessage = (msgProto: ForwardMsg): void => {
     // We don't have an immutableProto here, so we can't use
@@ -469,8 +469,8 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Handler for ForwardMsg.sessionStateChanged messages
-  * @param stateChangeProto a SessionState protobuf
+   * Handler for ForwardMsg.sessionStateChanged messages
+   * @param stateChangeProto a SessionState protobuf
   */
   handleSessionStateChanged = (stateChangeProto: SessionState): void => {
     this.setState((prevState: State) => {
@@ -538,8 +538,8 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Handler for ForwardMsg.sessionEvent messages
-  * @param sessionEvent a SessionEvent protobuf
+   * Handler for ForwardMsg.sessionEvent messages
+   * @param sessionEvent a SessionEvent protobuf
   */
   handleSessionEvent = (sessionEvent: SessionEvent): void => {
     this.sessionEventDispatcher.handleSessionEventMsg(sessionEvent)
@@ -566,8 +566,8 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Handler for ForwardMsg.newReport messages. This runs on each rerun
-  * @param newReportProto a NewReport protobuf
+   * Handler for ForwardMsg.newReport messages. This runs on each rerun
+   * @param newReportProto a NewReport protobuf
   */
   handleNewReport = (newReportProto: NewReport): void => {
     const initialize = newReportProto.initialize as Initialize
@@ -622,7 +622,7 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Performs one-time initialization. This is called from `handleNewReport`.
+   * Performs one-time initialization. This is called from `handleNewReport`.
   */
   handleOneTimeInitialization = (newReportProto: NewReport): void => {
     const initialize = newReportProto.initialize as Initialize
@@ -692,8 +692,8 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Handler for ForwardMsg.reportFinished messages
-  * @param status the ReportFinishedStatus that the report finished with
+   * Handler for ForwardMsg.reportFinished messages
+   * @param status the ReportFinishedStatus that the report finished with
   */
   handleReportFinished(status: ForwardMsg.ReportFinishedStatus): void {
     if (status === ForwardMsg.ReportFinishedStatus.FINISHED_SUCCESSFULLY) {
@@ -738,7 +738,7 @@ export class App extends PureComponent<Props, State> {
   }
 
   /*
-  * Clear all elements from the state.
+   * Clear all elements from the state.
   */
   clearAppState(
     reportHash: string,
@@ -760,14 +760,14 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Opens a dialog with the specified state.
+   * Opens a dialog with the specified state.
   */
   openDialog(dialogProps: DialogProps): void {
     this.setState({ dialog: dialogProps })
   }
 
   /**
-  * Closes the upload dialog if it's open.
+   * Closes the upload dialog if it's open.
   */
   closeDialog = (): void => {
     this.setState({ dialog: undefined })
@@ -775,7 +775,7 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Saves a UserSettings object.
+   * Saves a UserSettings object.
   */
   saveSettings = (newSettings: UserSettings): void => {
     const { runOnSave: prevRunOnSave } = this.state.userSettings
@@ -791,9 +791,9 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Update pendingElementsBuffer with the given Delta and set up a timer to
-  * update state.elements. This buffer allows us to process Deltas quickly
-  * without spamming React with too many of render() calls.
+   * Update pendingElementsBuffer with the given Delta and set up a timer to
+   * update state.elements. This buffer allows us to process Deltas quickly
+   * without spamming React with too many of render() calls.
   */
   handleDeltaMsg = (
     deltaMsg: Delta,
@@ -828,7 +828,7 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Used by e2e tests to test disabling widgets
+   * Used by e2e tests to test disabling widgets
   */
   closeConnection(): void {
     if (this.isServerConnected()) {
@@ -839,7 +839,7 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Callback to call when we want to share the report.
+   * Callback to call when we want to share the report.
   */
   shareReport = (): void => {
     if (this.isServerConnected()) {
@@ -872,11 +872,11 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Reruns the script.
+   * Reruns the script.
   *
-  * @param alwaysRunOnSave a boolean. If true, UserSettings.runOnSave
-  * will be set to true, which will result in a request to the Server
-  * to enable runOnSave for this report.
+   * @param alwaysRunOnSave a boolean. If true, UserSettings.runOnSave
+   * will be set to true, which will result in a request to the Server
+   * to enable runOnSave for this report.
   */
   rerunScript = (alwaysRunOnSave = false): void => {
     this.closeDialog()
@@ -901,7 +901,7 @@ export class App extends PureComponent<Props, State> {
     // Note: `rerunScript` is incorrectly called in some places.
     // We can remove `=== true` after adding type information
     if (alwaysRunOnSave === true) {
-      // Update our run-on-save setting *before* calling rerunScript.
+      // Update our run-on-save setting *before * calling rerunScript.
       // The rerunScript message currently blocks all BackMsgs from
       // being processed until the script has completed executing.
       this.saveSettings({ ...this.state.userSettings, runOnSave: true })
@@ -942,7 +942,7 @@ export class App extends PureComponent<Props, State> {
     )
   }
 
-  /** Requests that the server stop running the report */
+  /* * Requests that the server stop running the report */
   stopReport = (): void => {
     if (!this.isServerConnected()) {
       logError("Cannot stop app when disconnected from server.")
@@ -964,7 +964,7 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Shows a dialog asking the user to confirm they want to clear the cache
+   * Shows a dialog asking the user to confirm they want to clear the cache
   */
   openClearCacheDialog = (): void => {
     if (this.isServerConnected()) {
@@ -991,7 +991,7 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Asks the server to clear the st_cache
+   * Asks the server to clear the st_cache
   */
   clearCache = (): void => {
     this.closeDialog()
@@ -1006,7 +1006,7 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Sends a message back to the server.
+   * Sends a message back to the server.
   */
   private sendBackMsg = (msg: BackMsg): void => {
     if (this.connectionManager) {
@@ -1018,14 +1018,14 @@ export class App extends PureComponent<Props, State> {
   }
 
   /**
-  * Updates the report body when there's a connection error.
+   * Updates the report body when there's a connection error.
   */
   handleConnectionError = (errNode: ReactNode): void => {
     this.showError("Connection error", errNode)
   }
 
   /**
-  * Indicates whether we're connected to the server.
+   * Indicates whether we're connected to the server.
   */
   isServerConnected = (): boolean => {
     return this.connectionManager
@@ -1135,8 +1135,7 @@ export class App extends PureComponent<Props, State> {
           focused={true}
         >
           <StyledApp className={outerDivClass}>
-            {/* The tabindex below is required for testing. */}
-            
+            {/ * The tabindex below is required for testing. */}            
 
             <ReportView
               elements={elements}
