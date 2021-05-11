@@ -117,21 +117,51 @@ class FormMixin:
         Submit button is pressed, all widget values inside the form will be
         sent to Streamlit in a batch.
 
-        To add elements to the returned form object, you can use "with" notation
-        (preferred) or just call methods directly on the returned object. See
+        To add elements to a form object, you can use "with" notation
+        (preferred) or just call methods directly on the form. See
         examples below.
 
         Forms have a few constraints:
-        - Every form must contain a `st.form_submit_button`.
-        - You cannot add a normal `st.button` to a form.
-        - Forms can appear anywhere in your app (sidebar, columns, etc),
+
+        * Every form must contain a `st.form_submit_button`.
+        * You cannot add a normal `st.button` to a form.
+        * Forms can appear anywhere in your app (sidebar, columns, etc),
           but they cannot be embedded inside other forms.
+
+        For more information about forms, check out our
+        `blog post <https://blog.streamlit.io/introducing-submit-button-and-forms/>`_.
 
         Parameters
         ----------
         key : str
             A string that identifies the form. Each form must have its own
             key. (This key is not displayed to the user in the interface.)
+
+        Examples
+        --------
+
+        Inserting elements using "with" notation:
+
+        >>> with st.form("my_form"):
+        ...    st.write("Inside the form")
+        ...    slider_val = st.slider("Form slider")
+        ...    checkbox_val = st.checkbox("Form checkbox")
+        ...
+        ...    # Every form must have a submit button.
+        ...    submitted = st.form_submit_button("Submit")
+        ...    if submitted:
+        ...        st.write("slider", slider_val, "checkbox", checkbox_val)
+        ...
+        >>> st.write("Outside the form")
+
+        Inserting elements out of order:
+
+        >>> form = st.form("my_form")
+        >>> form.slider("Inside the form")
+        >>> st.slider("Outside the form")
+        >>>
+        >>> # Now add a submit button to the form:
+        >>> form.form_submit_button("Submit")
 
         """
 
@@ -164,6 +194,9 @@ class FormMixin:
 
         Every form must have a form_submit_button. A form_submit_button
         cannot exist outside a form.
+
+        For more information about forms, check out our
+        `blog post <https://blog.streamlit.io/introducing-submit-button-and-forms/>`_.
 
         Parameters
         ----------
