@@ -421,7 +421,7 @@ export class App extends PureComponent<Props, State> {
         title,
       })
 
-      document.title = `${title}`
+      document.title = "ZieTRAD"
     }
 
     if (favicon) {

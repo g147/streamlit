@@ -84,11 +84,39 @@ class DateInput extends React.PureComponent<Props, State> {
   }
 
   public componentDidMount(): void {
-    this.commitWidgetValue({ fromUi: false })
+    if (this.props.element.setValue) {
+      this.updateFromProtobuf()
+    } else {
+      this.commitWidgetValue({ fromUi: false })
+    }
+  }
+
+  public componentDidUpdate(): void {
+    this.maybeUpdateFromProtobuf()
   }
 
   public componentWillUnmount(): void {
     this.formClearHelper.disconnect()
+  }
+
+  private maybeUpdateFromProtobuf(): void {
+    const { setValue } = this.props.element
+    if (setValue) {
+      this.updateFromProtobuf()
+    }
+  }
+
+  private updateFromProtobuf(): void {
+    const { value: values } = this.props.element
+    this.props.element.setValue = false
+    this.setState(
+      {
+        values: values.map((v: string) => new Date(v)),
+      },
+      () => {
+        this.commitWidgetValue({ fromUi: false })
+      }
+    )
   }
 
   /** Commit state.value to the WidgetStateManager. */
@@ -144,15 +172,17 @@ class DateInput extends React.PureComponent<Props, State> {
 
     return (
       <div className="stDateInput" style={style}>
-        <StyledWidgetLabel>{element.label}</StyledWidgetLabel>
-        {element.help && (
-          <StyledWidgetLabelHelp>
-            <TooltipIcon
-              content={element.help}
-              placement={Placement.TOP_RIGHT}
-            />
-          </StyledWidgetLabelHelp>
-        )}
+        <StyledWidgetLabel>
+          {element.label}
+          {element.help && (
+            <StyledWidgetLabelHelp>
+              <TooltipIcon
+                content={element.help}
+                placement={Placement.TOP_RIGHT}
+              />
+            </StyledWidgetLabelHelp>
+          )}
+        </StyledWidgetLabel>
         <UIDatePicker
           formatString="yyyy/MM/dd"
           disabled={disabled}
