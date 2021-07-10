@@ -27,6 +27,8 @@ import TooltipIcon from "src/components/shared/TooltipIcon"
 import { Placement } from "src/components/shared/Tooltip"
 import { StyledWidgetLabelHelpInline } from "src/components/widgets/BaseWidget"
 
+import { StyledContent } from "./styled-components"
+
 export interface OwnProps {
   disabled: boolean
   element: CheckboxProto
@@ -63,11 +65,34 @@ class Checkbox extends React.PureComponent<Props, State> {
   }
 
   public componentDidMount(): void {
-    this.commitWidgetValue({ fromUi: false })
+    if (this.props.element.setValue) {
+      this.updateFromProtobuf()
+    } else {
+      this.commitWidgetValue({ fromUi: false })
+    }
+  }
+
+  public componentDidUpdate(): void {
+    this.maybeUpdateFromProtobuf()
   }
 
   public componentWillUnmount(): void {
     this.formClearHelper.disconnect()
+  }
+
+  private maybeUpdateFromProtobuf(): void {
+    const { setValue } = this.props.element
+    if (setValue) {
+      this.updateFromProtobuf()
+    }
+  }
+
+  private updateFromProtobuf(): void {
+    const { value } = this.props.element
+    this.props.element.setValue = false
+    this.setState({ value }, () => {
+      this.commitWidgetValue({ fromUi: false })
+    })
   }
 
   /** Commit state.value to the WidgetStateManager. */
@@ -167,15 +192,17 @@ class Checkbox extends React.PureComponent<Props, State> {
             },
           }}
         >
-          {element.label}
-          {element.help && (
-            <StyledWidgetLabelHelpInline>
-              <TooltipIcon
-                content={element.help}
-                placement={Placement.TOP_RIGHT}
-              />
-            </StyledWidgetLabelHelpInline>
-          )}
+          <StyledContent>
+            {element.label}
+            {element.help && (
+              <StyledWidgetLabelHelpInline>
+                <TooltipIcon
+                  content={element.help}
+                  placement={Placement.TOP_RIGHT}
+                />
+              </StyledWidgetLabelHelpInline>
+            )}
+          </StyledContent>
         </UICheckbox>
       </div>
     )

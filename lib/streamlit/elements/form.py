@@ -169,9 +169,12 @@ class FormMixin:
         >>> form.form_submit_button("Submit")
 
         """
+        from .utils import check_session_state_rules
 
         if is_in_form(self.dg):
             raise StreamlitAPIException("Forms cannot be nested in other forms.")
+
+        check_session_state_rules(default_value=None, key=key, writes_allowed=False)
 
         # A form is uniquely identified by its key.
         form_id = key
@@ -193,7 +196,12 @@ class FormMixin:
         return block_dg
 
     def form_submit_button(
-        self, label: str = "Submit", help: Optional[str] = None
+        self,
+        label: str = "Submit",
+        help: Optional[str] = None,
+        on_click=None,
+        args=None,
+        kwargs=None,
     ) -> bool:
         """Display a form submit button.
 
@@ -214,17 +222,28 @@ class FormMixin:
         help : str or None
             A tooltip that gets displayed when the button is hovered over.
             Defaults to None.
+        on_click : callable
+            An optional callback invoked when this button is clicked.
+        args : tuple
+            An optional tuple of args to pass to the callback.
+        kwargs : dict
+            An optional dict of kwargs to pass to the callback.
 
         Returns
         -------
         bool
             True if the button was clicked.
         """
+        form_id = current_form_id(self.dg)
+        submit_button_key = f"FormSubmitter:{form_id}-{label}"
         return self.dg._button(
             label=label,
-            key=f"FormSubmitter:{current_form_id(self.dg)}",
+            key=submit_button_key,
             help=help,
             is_form_submitter=True,
+            on_click=on_click,
+            args=args,
+            kwargs=kwargs,
         )
 
     @property
